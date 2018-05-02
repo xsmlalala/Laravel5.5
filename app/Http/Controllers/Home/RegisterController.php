@@ -26,6 +26,26 @@ class RegisterController extends Controller
         );
         return redirect('/home');
     }
+    public function getmsg(Request $request)
+    {
+        $online_id = $request->session()->get('id');
+        $send_id = $online_id[0]->id;
+        $received_id = (int)$_POST['received_id'];
+        // $where = "(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id})"
+        $check = DB::select("select * from messages where(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id})");
+        return response()->json($check);
+        // return response()->json(array(
+        //     'status' => $received_id,
+        //     'msg' => $send_id,
+        // ));
+        // return \Response::json($response);
+        // dump($send_id);
+        // dump($received_id);die;
+        // $check = DB::table('friends')->insert(
+        //     ['user_id' => $user_id, 'other_id' => $other_id]
+        // );
+        // return redirect('/home');
+    }
     public function register(Request $request,$id)
     {
         $username = $request->input('username');

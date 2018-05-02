@@ -14,33 +14,37 @@ class LoginController extends Controller
 {
     public function home(Request $request)
     {
-        $id = $request->session()->get('id');
         $username = $request->session()->get('username');
-
-        $info1 = DB::table('friends')
-            ->where('user_id', '=', $id[0]->id)
-            ->pluck('other_id');
-        $userid_arr = array();
-        foreach($info1 as $k1=>$v1){
-            $userid_arr[] = $v1;
-        }
-        $userid_arr[] = $id[0]->id;
-
-        if($info1 == null){
-            $info = DB::table('user')
-                ->get();
-            $arr = array();
-            foreach($info as $k=>$v){
-                if($v->id != $id[0]->id){
-                    $arr[] = $v;
-                }
-            }
+        $id = $request->session()->get('id');
+        if($id == null){
+            return view("home",['u'=>$username,'id'=>$id]);
         }else{
-            $arr = DB::table('user')
-                ->whereNotIn('id', $userid_arr)
-                ->get();
+
+            $info1 = DB::table('friends')
+                ->where('user_id', '=', $id[0]->id)
+                ->pluck('other_id');
+            $userid_arr = array();
+            foreach($info1 as $k1=>$v1){
+                $userid_arr[] = $v1;
+            }
+            $userid_arr[] = $id[0]->id;
+
+            if($info1 == null){
+                $info = DB::table('user')
+                    ->get();
+                $arr = array();
+                foreach($info as $k=>$v){
+                    if($v->id != $id[0]->id){
+                        $arr[] = $v;
+                    }
+                }
+            }else{
+                $arr = DB::table('user')
+                    ->whereNotIn('id', $userid_arr)
+                    ->get();
+            }
+            return view("home",['info' => $arr,'u'=>$username,'id'=>$id]);
         }
-        return view("home",['info' => $arr,'u'=>$username]);
     }
     public function index()
     {
@@ -49,6 +53,7 @@ class LoginController extends Controller
     public function myFriends(Request $request)
     {
         $id = $request->session()->get('id');
+        $username = $request->session()->get('username');
         $info1 = DB::table('friends')
             ->where('user_id', '=', $id[0]->id)
             ->pluck('other_id');
@@ -56,7 +61,10 @@ class LoginController extends Controller
         foreach($info1 as $k1=>$v1){
             $userid_arr[] = $v1;
         }
-        return view("login.login");
+        $arr = DB::table('user')
+                    ->whereIn('id', $userid_arr)
+                    ->get();
+        return view("myFriends",['info' => $arr,'u'=>$username,'id'=>$id]);
     }
     public function login(Request $request)
     {

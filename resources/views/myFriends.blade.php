@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="_token" content="{{ csrf_token() }}"/>
 
         <title>Laravel</title>
 
@@ -71,7 +72,7 @@
                     @if($id != '')
                     Laravel 欢迎 {{$u}}
                     @else
-                    Laravel 
+                    Laravel 111
                     @endif
                 </div>
 
@@ -88,13 +89,49 @@
                     <a href="{{ url('/register') }}">注册</a>
                 </div><br><br><br><br>
                 @if($id != '')
-                <div class="links">
+                <div class="links" style="border:1px solid white;margin-left: 0%;float:left;">
                     @foreach ($info as $v)
-                        <span>{{ $v->username }}</span>&nbsp;&nbsp;&nbsp<button><a href="{{url('/add',$v->id)}}">加好友</a></button><br><br>
+                        <!-- <a href="{{url('/chat',$v->id)}}"><button>{{ $v->username }}</button></a><br><br> -->
+                        <button onclick="chat({{$v->id}})">{{ $v->username }}</button><br><br>
                     @endforeach
+                </div>
+                <div class="links" id="dialog_box" style="border:1px solid red;float:left;width:72%;height:500px;margin-left: 20px;display:none">
+                    <button style="margin-left: -80%">11111</button><br><br>
+                    <button style="margin-left:  80%">22222</button><br><br>
                 </div>
                 @endif
             </div>
         </div>
+       <!--  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>  -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            function chat(type){
+                $("#dialog_box").css("display","block");
+                var received_id = type;
+                alert(received_id);
+                $.ajax({
+                    type:'post',
+                    url:"{{url('/getmsg')}}",
+                    data:{received_id:received_id},
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    success:function(data){
+                        console.log(data);
+                        $str = "";
+                        for(var i-0;i<result.data.length;i++){
+                            user=result.data[i];
+                            for(var k in user){
+                                user[i]=k; //将key值存入user数组中
+                                userv[i]=obj[k]; //将value值存入userva数组中
+                            }
+                        }
+                        $("#msg").html(data.msg);
+                    }
+                });
+            }
+        </script>
     </body>
 </html>
