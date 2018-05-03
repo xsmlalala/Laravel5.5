@@ -53,6 +53,7 @@ class LoginController extends Controller
     public function myFriends(Request $request)
     {
         $id = $request->session()->get('id');
+        $send_id = $id[0]->id;
         $username = $request->session()->get('username');
         $info1 = DB::table('friends')
             ->where('user_id', '=', $id[0]->id)
@@ -64,7 +65,7 @@ class LoginController extends Controller
         $arr = DB::table('user')
                     ->whereIn('id', $userid_arr)
                     ->get();
-        return view("myFriends",['info' => $arr,'u'=>$username,'id'=>$id]);
+        return view("myFriends",['info' => $arr,'u'=>$username,'id'=>$send_id]);
     }
     public function login(Request $request)
     {
@@ -79,5 +80,16 @@ class LoginController extends Controller
         }else{
              return back()->with('error','密码或者用户名错误');
         }
+    }
+    public function send_message(Request $request){
+        $received_id = (int)$_POST['received_id'];
+        $content = $_POST['text'];
+        $id = $request->session()->get('id');
+        $send_id = $id[0]->id;
+        $sendtime = time();
+        $check = DB::table('messages')->insert(
+            ['content' => $content, 'received_id' => $received_id, 'send_id' => $send_id,'sendtime' => $sendtime]
+        );
+        return response()->json(array($content,$send_id));
     }
 }

@@ -31,20 +31,13 @@ class RegisterController extends Controller
         $online_id = $request->session()->get('id');
         $send_id = $online_id[0]->id;
         $received_id = (int)$_POST['received_id'];
+        $count = DB::select("select count(id) from messages where(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id})");
+        $status = DB::table('user')->where("id","=",$received_id)->pluck('username');
+        $num = $count[3]->count(id);
         // $where = "(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id})"
-        $check = DB::select("select * from messages where(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id})");
-        return response()->json($check);
-        // return response()->json(array(
-        //     'status' => $received_id,
-        //     'msg' => $send_id,
-        // ));
-        // return \Response::json($response);
-        // dump($send_id);
-        // dump($received_id);die;
-        // $check = DB::table('friends')->insert(
-        //     ['user_id' => $user_id, 'other_id' => $other_id]
-        // );
-        // return redirect('/home');
+        $check = DB::select("select * from messages where(received_id={$received_id} and send_id = {$send_id}) or (received_id={$send_id} and send_id = {$received_id}) order by id");
+        // dump($status);dump($check);die;
+        return response()->json(array($check,$status,$received_id,$num));
     }
     public function register(Request $request,$id)
     {
@@ -57,7 +50,6 @@ class RegisterController extends Controller
             );
             return redirect('/login');
         }else{
-//            return redirect('/login');
              return back()->with('error','用户名已存在！~');
         }
     }

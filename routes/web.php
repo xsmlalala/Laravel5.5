@@ -27,8 +27,9 @@ Route::get('/login', "\App\Http\Controllers\Home\LoginController@index");
 Route::get('/myFriends', "\App\Http\Controllers\Home\LoginController@myFriends");
 Route::get('/register', "\App\Http\Controllers\Home\RegisterController@index");
 Route::get('/add/{id}', "\App\Http\Controllers\Home\RegisterController@add");
-Route::post('/getmsg',"\App\Http\Controllers\Home\RegisterController@getmsg");
 // Route::get('/getmsg/{received_id}',"\App\Http\Controllers\Home\RegisterController@getmsg");
 
-Route::post('/logininfo',"\App\Http\Controllers\Home\LoginController@login");
 Route::post('/registerinfo',"\App\Http\Controllers\Home\RegisterController@register");
+Route::post('/getmsg',"\App\Http\Controllers\Home\RegisterController@getmsg");
+Route::post('/logininfo',"\App\Http\Controllers\Home\LoginController@login");
+Route::post('/send_message',"\App\Http\Controllers\Home\LoginController@send_message");

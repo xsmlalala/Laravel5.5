@@ -90,7 +90,7 @@
                 @if($id != '')
                 <div class="links">
                     @foreach ($info as $v)
-                        <span>{{ $v->username }}</span>&nbsp;&nbsp;&nbsp<button><a href="{{url('/add',$v->id)}}">加好友</a></button><br><br>
+                        <span>{{ $v->username }}</span>&nbsp;&nbsp;&nbsp;<button><a href="{{url('/add',$v->id)}}">加好友</a></button><br><br>
                     @endforeach
                 </div>
                 @endif
